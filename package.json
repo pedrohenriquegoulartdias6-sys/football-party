@@ -1,0 +1,6 @@
+{"name":"football-party","private":true,"scripts":{
+"postinstall":"npm --prefix backend i && npm --prefix frontend i",
+"dev":"concurrently \"npm --prefix backend run dev\" \"npm --prefix frontend run dev\"",
+"build":"npm --prefix frontend run build",
+"start":"node backend/src/server.js"},
+"devDependencies":{"concurrently":"^9.0.0"}}
