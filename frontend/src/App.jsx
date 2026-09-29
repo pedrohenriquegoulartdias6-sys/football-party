@@ -1,5 +1,5 @@
 import {useEffect,useState} from 'react';import {io} from 'socket.io-client';
-const socket=io(),send=(e,d)=>socket.emit(e,d);
+const socket=io(import.meta.env.VITE_API_URL || undefined),send=(e,d)=>socket.emit(e,d);
 const MODES=[['craques','🏆 Desafio dos Craques'],['melhor','🐐 Melhor da História'],['duelo','⚔️ 1 contra 1'],['impostor','🕵️ Impostor'],['leilao','💰 Leilão'],['random','🎲 Aleatório']];
 function Timer({s}){const[,t]=useState(0),off=s.now-Date.now();
  useEffect(()=>{const i=setInterval(()=>t(x=>x+1),250);return()=>clearInterval(i)},[]);

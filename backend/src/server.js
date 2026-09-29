@@ -1,12 +1,9 @@
 import express from 'express';import http from 'http';import path from 'path';import {fileURLToPath} from 'url';import {Server} from 'socket.io';
 import {Q,DUEL,THEMES,LETTERS,WORDS,ITEMS} from './data.js';
-const app = express();
-const srv = http.createServer(app);
-
-const io = new Server(srv, {
-  cors: {
-    origin: process.env.FRONTEND_URL || '*',
-    methods: ['GET', 'POST']
+const app=express(),srv=http.createServer(app),io=new Server(srv,{
+  cors:{
+    origin:process.env.FRONTEND_URL||'*',
+    methods:['GET','POST']
   }
 });
 const dist=path.join(path.dirname(fileURLToPath(import.meta.url)),'../../frontend/dist');
@@ -87,6 +84,4 @@ io.on('connection',s=>{
  s.on('disconnect',()=>{const r=rooms.get(s.data.code);if(!r)return;
   if(r.host===s.id){stop(r);rooms.delete(r.code);r.players.forEach(p=>io.to(p.id).emit('closed'))}
   else if(r.phase==='lobby'){r.players=r.players.filter(p=>p.id!==s.id);sync(r)}})});
-srv.listen(process.env.PORT || 3001, '0.0.0.0', () =>
-  console.log('Football Party na porta', process.env.PORT || 3001)
-);
+srv.listen(process.env.PORT||3000,'0.0.0.0',()=>console.log('Football Party na porta',process.env.PORT||3000));
