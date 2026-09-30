@@ -1,10 +1,7 @@
 import express from 'express';import http from 'http';import path from 'path';import {fileURLToPath} from 'url';import {Server} from 'socket.io';
 import {Q,DUEL,THEMES,LETTERS,WORDS,ITEMS} from './data.js';
 const app=express(),srv=http.createServer(app),io=new Server(srv,{
-  cors:{
-    origin:process.env.FRONTEND_URL||'*',
-    methods:['GET','POST']
-  }
+  cors:{origin:'*',methods:['GET','POST']}
 });
 const dist=path.join(path.dirname(fileURLToPath(import.meta.url)),'../../frontend/dist');
 app.use(express.static(dist));app.get('*',(_,res)=>res.sendFile(path.join(dist,'index.html')));

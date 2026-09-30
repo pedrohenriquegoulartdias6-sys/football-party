@@ -1,5 +1,7 @@
 import {useEffect,useState} from 'react';import {io} from 'socket.io-client';
-const socket=io(import.meta.env.VITE_API_URL || undefined),send=(e,d)=>socket.emit(e,d);
+const API_URL = import.meta.env.VITE_API_URL || 'https://football-party.onrender.com';
+const socket = io(API_URL, { transports: ['websocket', 'polling'] });
+const send = (e,d) => socket.emit(e,d);
 const MODES=[['craques','🏆 Desafio dos Craques'],['melhor','🐐 Melhor da História'],['duelo','⚔️ 1 contra 1'],['impostor','🕵️ Impostor'],['leilao','💰 Leilão'],['random','🎲 Aleatório']];
 function Timer({s}){const[,t]=useState(0),off=s.now-Date.now();
  useEffect(()=>{const i=setInterval(()=>t(x=>x+1),250);return()=>clearInterval(i)},[]);
@@ -22,8 +24,13 @@ function Result({r}){if(!r)return null;
  {'winner' in r&&(r.winner?<div className="big">{r.winner} levou {r.item} por R${r.bid} (saldo R${r.left})</div>:<div>Ninguém deu lance.</div>)}</div>}
 export default function App(){
  const[s,setS]=useState(null),[err,setErr]=useState(''),[code,setCode]=useState(''),[name,setName]=useState('');
- useEffect(()=>{socket.on('state',setS);socket.on('closed',()=>{setS(null);setErr('O anfitrião saiu')});
-  socket.on('err',m=>{setErr(m);setTimeout(()=>setErr(''),3000)});return()=>socket.off()},[]);
+ useEffect(()=>{
+  socket.on('connect_error',()=>setErr('Não foi possível conectar ao servidor. Verifique o backend do Render.'));
+  socket.on('state',setS);
+  socket.on('closed',()=>{setS(null);setErr('O anfitrião saiu')});
+  socket.on('err',m=>{setErr(m);setTimeout(()=>setErr(''),3000)});
+  return()=>{socket.off('connect_error');socket.off('state');socket.off('closed');socket.off('err')};
+},[]);
  const E=err&&<div className="err">{err}</div>;
  if(!s)return<div className="wrap">{E}<h1>⚽ Football Party</h1>
   <div className="card"><button onClick={()=>send('createRoom')}>CRIAR SALA</button></div>
