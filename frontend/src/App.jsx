@@ -1,6 +1,10 @@
 import {useEffect,useState} from 'react';import {io} from 'socket.io-client';
-const API_URL = import.meta.env.VITE_API_URL || 'https://football-party.onrender.com';
-const socket = io(API_URL, { transports: ['websocket', 'polling'] });
+const API_URL = 'https://football-party.onrender.com';
+const socket = io(API_URL, {
+  transports: ['polling', 'websocket'],
+  reconnection: true,
+  reconnectionAttempts: Infinity
+});
 const send = (e,d) => socket.emit(e,d);
 const MODES=[['craques','🏆 Desafio dos Craques'],['melhor','🐐 Melhor da História'],['duelo','⚔️ 1 contra 1'],['impostor','🕵️ Impostor'],['leilao','💰 Leilão'],['random','🎲 Aleatório']];
 function Timer({s}){const[,t]=useState(0),off=s.now-Date.now();
